@@ -27,8 +27,10 @@ export const config = {
     const c = Math.floor(Number(process.env.MAX_CONCURRENCY ?? 8));
     return Number.isFinite(c) && c > 0 ? c : 8;
   })(),
-  // The LLM that drives the browser agents. Override with AGENT_MODEL in .env.
-  agentModel: process.env.AGENT_MODEL ?? "claude-sonnet-5",
+  // The LLM that drives the browser agents. Haiku by default — the agents make
+  // many calls, and the driving is mostly mechanical. Override with AGENT_MODEL
+  // in .env (e.g. a stronger model for harder sites).
+  agentModel: process.env.AGENT_MODEL ?? "claude-haiku-4-5-20251001",
   // Optional Cloudflare AI Gateway. When set, Anthropic calls route through the
   // gateway and carry the cf-aig-authorization header (authenticated gateways
   // 401 without it). Both are read from the shell env if exported there.

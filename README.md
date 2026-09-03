@@ -8,7 +8,7 @@ Three small tools for the agentic era, all built on [Solari](https://getsolari.c
 | **Slipstream** 💨 | Can AI agents actually get through my product's flows? | Your **product**, as seen by agents |
 | **Swarm** 🐝 | Where do real users drop off in my funnel, and why? | Your product's **users** |
 
-Same engine underneath — a bounded fan-out over Solari environments (`src/core/pool.ts`) and a shared report (`src/core/report.ts`). The tools differ only in what they run and how they score it.
+Same engine underneath — a bounded fan-out over Solari environments (`src/core/pool.ts`) and a shared report (`src/core/report.ts`). The tools differ only in what they run and how they score it. See [OVERVIEW.md](OVERVIEW.md) for a per-tool breakdown of every file.
 
 ## Why not just run this locally?
 
