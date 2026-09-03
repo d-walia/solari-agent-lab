@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nimbus — ship faster</title>
+<!--
+  DEMO FUNNEL for Slipstream + Swarm.
+  A believable SaaS signup funnel with FIVE deliberately planted friction points,
+  each marked FLAW below. The happy path IS completable (get started → pick a
+  plan → fill signup, leave promo blank → dashboard), so some agents/personas
+  finish and some drop off — which is the whole point.
+-->
+<style>
+  :root{
+    --ink:#111418; --soft:#5b636e; --muted:#9aa2ad; --line:#e6e9ee;
+    --bg:#fbfcfd; --card:#fff; --brand:#3b5bdb; --brand-ink:#2f49b0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 22px 80px}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:56px}
+  .logo{font-weight:700;font-size:19px;letter-spacing:-.02em}
+  .logo span{color:var(--brand)}
+  /* FLAW 1: pricing is buried — tiny, low-contrast, and only legible on hover.
+     Comparison-shoppers hunt for a price and can't find it; mobile/agents miss it. */
+  .pricing-link{font-size:11px;color:#cfd4db;text-decoration:none}
+  .pricing-link:hover{color:var(--soft)}
+  h1{font-size:2.4rem;line-height:1.08;letter-spacing:-.03em;margin:0 0 14px}
+  .lede{font-size:1.15rem;color:var(--soft);max-width:34ch;margin:0 0 32px}
+  button,.btn{font:inherit;cursor:pointer;border-radius:10px;border:1px solid transparent}
+  .primary{background:var(--brand);color:#fff;padding:13px 26px;font-weight:600;font-size:1.02rem}
+  .primary:hover{background:var(--brand-ink)}
+  .ghost{background:transparent;color:var(--soft);border-color:var(--line);padding:12px 22px}
+  section[data-step]{display:none;animation:fade .3s ease}
+  section[data-step].on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0}
+  .plan{border:1px solid var(--line);border-radius:14px;padding:20px 18px;background:var(--card)}
+  .plan.sel{border-color:var(--brand);box-shadow:0 0 0 3px rgba(59,91,219,.12)}
+  .plan h3{margin:0 0 4px;font-size:1.05rem}
+  .plan .p{font-weight:700;font-size:1.5rem;letter-spacing:-.02em}
+  .plan .p small{font-weight:400;font-size:.8rem;color:var(--muted)}
+  .plan button{margin-top:14px;width:100%;padding:9px;background:#f1f3f7;color:var(--ink);font-weight:600}
+  .plan.sel button{background:var(--brand);color:#fff}
+  .rowbtns{display:flex;align-items:center;gap:14px;margin-top:10px}
+  /* FLAW 2: the "continue" is an ICON-ONLY button — no text, no aria-label.
+     Agents and non-technical users can't tell what it does. */
+  .iconbtn{width:52px;height:52px;border-radius:50%;background:var(--brand);color:#fff;font-size:22px;line-height:1;display:inline-flex;align-items:center;justify-content:center}
+  .iconbtn:hover{background:var(--brand-ink)}
+  /* FLAW 4: prominent "Talk to sales" distractor that dead-ends. */
+  .distract{font-weight:600;color:var(--brand)}
+  form label{display:block;font-size:.82rem;font-weight:600;color:var(--soft);margin:16px 0 6px;text-transform:uppercase;letter-spacing:.04em}
+  form input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff}
+  form input:focus{outline:none;border-color:var(--brand)}
+  /* FLAW 3: promo field sits right above submit with helper text implying it's
+     required ("to continue"), though it's optional. Impatient users bail here. */
+  .promo-help{font-size:.8rem;color:var(--soft);margin:6px 0 0}
+  .msg{color:var(--muted);font-size:.9rem;margin-top:14px}
+  .done{text-align:center;padding:40px 0}
+  .done .check{width:64px;height:64px;border-radius:50%;background:#e7f5ee;color:#1f8a53;font-size:32px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:18px}
+  footer{margin-top:60px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">Nimbus<span>.</span></div>
+    <!-- FLAW 1 in action: the only pricing entry point, near-invisible -->
+    <a class="pricing-link" href="#pricing" onclick="showPricing(event)">pricing</a>
+  </header>
+
+  <!-- STEP 1 — landing -->
+  <section data-step="1" class="on">
+    <h1>Ship faster with Nimbus.</h1>
+    <p class="lede">The deploy pipeline that sets itself up. Go from repo to production in one click.</p>
+    <button class="primary" onclick="go(2)">Get started</button>
+    <p id="pricing-note" class="msg" hidden>Plans start at $0. See plans on the next step.</p>
+  </section>
+
+  <!-- STEP 2 — plan select -->
+  <section data-step="2">
+    <h1 style="font-size:1.8rem">Pick a plan</h1>
+    <div class="plans">
+      <div class="plan" onclick="pick(this)"><h3>Free</h3><div class="p">$0</div><button>Choose</button></div>
+      <div class="plan sel" onclick="pick(this)"><h3>Pro</h3><div class="p">$29<small>/mo</small></div><button>Choose</button></div>
+      <div class="plan" onclick="pick(this)"><h3>Team</h3><div class="p">$99<small>/mo</small></div><button>Choose</button></div>
+    </div>
+    <div class="rowbtns">
+      <!-- FLAW 2: icon-only continue -->
+      <button class="iconbtn" onclick="go(3)">&rarr;</button>
+      <!-- FLAW 4: distractor dead-end -->
+      <a class="distract" href="#sales" onclick="deadEnd(event)">Talk to sales</a>
+    </div>
+    <p id="sales-note" class="msg" hidden>Thanks — a rep will reach out. (This path doesn't continue signup.)</p>
+  </section>
+
+  <!-- STEP 3 — signup -->
+  <section data-step="3">
+    <h1 style="font-size:1.8rem">Create your account</h1>
+    <form onsubmit="finish(event)">
+      <label>Full name</label>
+      <input name="name" required placeholder="Jane Doe">
+      <label>Work email</label>
+      <input name="email" type="email" required placeholder="jane@company.com">
+      <!-- FLAW 3: optional promo field that reads as required -->
+      <label>Promo code</label>
+      <input name="promo" placeholder="Enter code">
+      <p class="promo-help">Enter your promo code to continue.</p>
+      <div class="rowbtns" style="margin-top:22px">
+        <!-- FLAW 5: submit is ambiguously labeled "Go" -->
+        <button class="primary" type="submit">Go</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- STEP 4 — success -->
+  <section data-step="4">
+    <div class="done">
+      <div class="check">&#10003;</div>
+      <h1>You're in.</h1>
+      <p class="lede" style="margin:0 auto">Welcome to your Nimbus dashboard.</p>
+      <p id="dashboard-marker" style="color:var(--muted);font-size:12px;margin-top:20px">dashboard ready</p>
+    </div>
+  </section>
+
+  <footer>Nimbus is a fictional product used to demo agent-readiness and funnel testing.</footer>
+</div>
+
+<script>
+  function go(n){
+    document.querySelectorAll('section[data-step]').forEach(s=>s.classList.remove('on'));
+    document.querySelector('section[data-step="'+n+'"]').classList.add('on');
+    window.scrollTo(0,0);
+  }
+  function pick(el){
+    document.querySelectorAll('.plan').forEach(p=>p.classList.remove('sel'));
+    el.classList.add('sel');
+  }
+  function showPricing(e){ e.preventDefault(); document.getElementById('pricing-note').hidden=false; }
+  function deadEnd(e){ e.preventDefault(); document.getElementById('sales-note').hidden=false; }
+  function finish(e){ e.preventDefault(); go(4); }
+</script>
+</body>
+</html>

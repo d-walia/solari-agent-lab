@@ -1,13 +1,18 @@
 /**
- * Solari client init + env config, shared by every tool.
+ * Solari client init + shared config. Grounded in the real cookbook SDK
+ * (github.com/solari-sdk/solari-cookbook), not the docs.
  *
- * NOTE: SDK surface is per the Solari docs (docs.getsolari.com). Verify the
- * exact import/method names against your forked solari-cookbook before relying
- * on them — packages move faster than docs.
+ * TWO gotchas the cookbook is emphatic about:
+ *  1. `browser.close()` releases the SESSION. You must ALSO call
+ *     `browsers.close()` ONCE at the very end of a run, or the Node process
+ *     hangs forever (the client holds a loopback proxy that keeps the event
+ *     loop alive). Every tool's run() does this in a top-level finally.
+ *  2. Recording is opt-in per session (`recording: true` at launch). The replay
+ *     uploads asynchronously AFTER release, so the first downloadReplay() calls
+ *     404 — retry before concluding there's no replay.
  */
 import "dotenv/config";
 import { Solari } from "@solarisdk/browser";
-import { SandboxClient } from "@solarisdk/sandbox";
 
 function required(name: string): string {
   const v = process.env[name];
@@ -17,11 +22,56 @@ function required(name: string): string {
 
 export const config = {
   solariKey: required("SOLARI_API_KEY"),
+  anthropicKey: required("ANTHROPIC_API_KEY"),
   concurrency: Number(process.env.MAX_CONCURRENCY ?? 8),
+  // The LLM that drives the browser agents. Override with AGENT_MODEL in .env.
+  agentModel: process.env.AGENT_MODEL ?? "claude-sonnet-5",
+  // Optional Cloudflare AI Gateway. When set, Anthropic calls route through the
+  // gateway and carry the cf-aig-authorization header (authenticated gateways
+  // 401 without it). Both are read from the shell env if exported there.
+  anthropicBaseUrl: process.env.ANTHROPIC_BASE_URL || undefined,
+  cfAigToken: process.env.CF_AIG_TOKEN || undefined,
 };
 
-/** Browser client — real Chrome in the cloud, driven with Playwright/CDP. */
+/** One shared browser client for the whole run. Close it once, at the end. */
 export const browsers = new Solari({ apiKey: config.solariKey });
 
-/** Sandbox client — headless Linux microVMs for code + checks. */
-export const sandboxes = new SandboxClient({ apiKey: config.solariKey });
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Launch with retry + jitter. Running the pool at the concurrency cap means N
+ * launches fire at once; if that bursts past the cap or a rate limit, the raw
+ * launch() throws. Here we jitter the herd and back off so a trial waits for a
+ * slot instead of dying. Surfaces the real error only after exhausting retries.
+ */
+export async function launchBrowser(opts?: Record<string, any>, tries = 4): Promise<any> {
+  let lastErr: unknown;
+  for (let i = 0; i < tries; i++) {
+    if (i === 0) await sleep(Math.random() * 400);
+    try {
+      return await browsers.launch(opts as any);
+    } catch (err) {
+      lastErr = err;
+      await sleep(2000 * (i + 1) + Math.random() * 800);
+    }
+  }
+  throw lastErr;
+}
+
+/**
+ * Best-effort replay fetch for forensics. Returns the rrweb NDJSON as a string,
+ * or null if it never showed up. The client auto-decompresses — do not gunzip.
+ */
+export async function downloadReplay(sessionId: string, tries = 8): Promise<string | null> {
+  for (let i = 0; i < tries; i++) {
+    await new Promise((r) => setTimeout(r, 3000));
+    try {
+      const blob = await (browsers as any).sessions.downloadReplay(sessionId);
+      return blob.toString();
+    } catch (err: any) {
+      if (err?.status === 404) continue;
+      return null;
+    }
+  }
+  return null;
+}

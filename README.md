@@ -25,14 +25,22 @@ npm install
 ```
 
 ```bash
-npm run gauntlet
+npm run gauntlet -- --trials 5            # agent reliability, 5 trials/task
+npm run slipstream -- --runs 5            # agent-readiness of the default flow
+npm run swarm -- --runs 10                # 5 personas × 10 journeys
+```
+
+Point Slipstream or Swarm at your own site:
+
+```bash
+npm run slipstream -- --url https://your.site --goal "sign up and reach the dashboard"
 ```
 
 ## Status
 
-- [x] Shared core — worker pool + report writer
-- [ ] Gauntlet — reliability harness
-- [ ] Slipstream — agent-readiness
-- [ ] Swarm — synthetic users
+- [x] Shared core — worker pool, agent driver, report writer
+- [x] Gauntlet — reliability harness
+- [x] Slipstream — agent-readiness
+- [x] Swarm — synthetic users
 
 Built with AI, fast, on purpose.

@@ -3,21 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Three tools for the agentic era, built on Solari: Gauntlet (agent reliability), Errand (agent-readiness), Swarm (synthetic users).",
+  "description": "Three tools for the agentic era, built on Solari: Gauntlet (agent reliability), Slipstream (agent-readiness), Swarm (synthetic users).",
   "scripts": {
     "gauntlet": "tsx src/tools/gauntlet/cli.ts",
+    "debug:gauntlet": "tsx src/tools/gauntlet/debug.ts",
     "slipstream": "tsx src/tools/slipstream/cli.ts",
     "swarm": "tsx src/tools/swarm/cli.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@solarisdk/browser": "latest",
-    "@solarisdk/sandbox": "latest",
+    "@anthropic-ai/sdk": "latest",
+    "@solarisdk/browser": "^0.1.1",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "tsx": "^4.19.0",
-    "typescript": "^5.6.0"
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
   }
 }
