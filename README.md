@@ -5,7 +5,7 @@ Three small tools for the agentic era, all built on [Solari](https://getsolari.c
 | Tool | Question it answers | Subject |
 | --- | --- | --- |
 | **Gauntlet** ⚔️ | How reliably does my agent actually complete a task? | Your **agent** |
-| **Errand** 🧭 | Can AI agents actually get through my product's flows? | Your **product**, as seen by agents |
+| **Slipstream** 💨 | Can AI agents actually get through my product's flows? | Your **product**, as seen by agents |
 | **Swarm** 🐝 | Where do real users drop off in my funnel, and why? | Your product's **users** |
 
 Same engine underneath — a bounded fan-out over Solari environments (`src/core/pool.ts`) and a shared report (`src/core/report.ts`). The tools differ only in what they run and how they score it.
@@ -32,7 +32,7 @@ npm run gauntlet
 
 - [x] Shared core — worker pool + report writer
 - [ ] Gauntlet — reliability harness
-- [ ] Errand — agent-readiness
+- [ ] Slipstream — agent-readiness
 - [ ] Swarm — synthetic users
 
 Built with AI, fast, on purpose.

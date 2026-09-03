@@ -6,7 +6,7 @@
   "description": "Three tools for the agentic era, built on Solari: Gauntlet (agent reliability), Errand (agent-readiness), Swarm (synthetic users).",
   "scripts": {
     "gauntlet": "tsx src/tools/gauntlet/cli.ts",
-    "errand": "tsx src/tools/errand/cli.ts",
+    "slipstream": "tsx src/tools/slipstream/cli.ts",
     "swarm": "tsx src/tools/swarm/cli.ts",
     "typecheck": "tsc --noEmit"
   },
