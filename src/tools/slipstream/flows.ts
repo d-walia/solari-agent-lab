@@ -19,10 +19,10 @@ export interface Flow {
 
 export const flows: Flow[] = [
   {
-    id: "saucedemo-checkout",
-    label: "Checkout (baseline)",
-    url: "https://www.saucedemo.com/",
-    goal: `Log in as "standard_user" / "secret_sauce", add the "Sauce Labs Backpack" to the cart, and complete checkout (First: Test, Last: User, Zip: 90210). Finish at the order-complete page.`,
+    id: "nimbus-signup",
+    label: "Nimbus signup",
+    url: "https://d-walia.github.io/solari-agent-lab/demo-funnel/",
+    goal: "Sign up for Nimbus and reach the dashboard.",
   },
 ];
 
@@ -50,7 +50,7 @@ export function hintFor(b: Barrier): string {
 /** Heuristic classifier over the give-up reason + the last page text. */
 export function classify(reason: string | undefined, endText: string): Barrier {
   const s = `${reason ?? ""} ${endText}`.toLowerCase();
-  if (/captcha|verify you are human|unusual traffic|are you a robot|access denied|forbidden|cloudflare|blocked/.test(s))
+  if (/captcha|verify you are human|unusual traffic|are you a robot|access denied|http 403|forbidden|cloudflare/.test(s))
     return "access-block";
   if (/verification code|one-time|otp|two-factor|2fa|please (log|sign) in|enter your password/.test(s))
     return "auth-wall";

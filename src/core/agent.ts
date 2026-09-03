@@ -49,6 +49,7 @@ const ACT_TOOL: Anthropic.Tool = {
       index: { type: "number", description: "Element index for click/type." },
       text: { type: "string", description: "Text to type (for type)." },
       url: { type: "string", description: "URL for navigate." },
+      direction: { type: "string", enum: ["up", "down"], description: "Scroll direction (default down)." },
       success: { type: "boolean", description: "For finish: did you actually achieve the goal?" },
     },
     required: ["reasoning", "action"],
@@ -58,6 +59,10 @@ const ACT_TOOL: Anthropic.Tool = {
 /** Tag interactable, visible elements with data-agent-idx and return a compact list. */
 async function snapshot(page: any): Promise<Array<{ idx: number; label: string }>> {
   return await page.evaluate(() => {
+    // Clear tags from a previous snapshot first. On SPA sites (show/hide steps,
+    // no page load) old tags linger, so indices collide across hidden + visible
+    // elements and Playwright grabs a stale, unclickable one. This is the fix.
+    document.querySelectorAll("[data-agent-idx]").forEach((e) => e.removeAttribute("data-agent-idx"));
     const sel = 'a,button,input,textarea,select,[role="button"],[role="link"],[onclick]';
     const out: Array<{ idx: number; label: string }> = [];
     let i = 0;
@@ -116,9 +121,13 @@ export async function drive(
   for (let n = 1; n <= budget; n++) {
     let url = "";
     let elements: Array<{ idx: number; label: string }> = [];
+    let pageText = "";
     try {
       url = page.url();
       elements = await snapshot(page);
+      // Give the agent eyes for text — success/error states are often words, not
+      // buttons, and on SPAs the URL never changes so text is the only signal.
+      pageText = await page.evaluate(() => (document.body?.innerText ?? "").replace(/\s+/g, " ").trim().slice(0, 1200));
     } catch {
       /* page mid-navigation; try again next loop */
     }
@@ -137,7 +146,7 @@ export async function drive(
         messages: [
           {
             role: "user",
-            content: `URL: ${url}\n\nElements:\n${list}\n\nRecent actions:\n${recent}\n\nWhat's your next action?`,
+            content: `URL: ${url}\n\nVisible page text:\n${pageText || "(none)"}\n\nInteractable elements:\n${list}\n\nRecent actions:\n${recent}\n\nWhat's your next action? If the visible text already shows the goal is achieved (e.g. a confirmation), call finish.`,
           },
         ],
       });
@@ -164,6 +173,16 @@ export async function drive(
       return { succeeded: false, gaveUp: true, reason: a.reasoning, steps };
     }
 
+    // Guard: click/type need a real element from the current snapshot. If the
+    // model names an index that isn't listed, fail fast with a clear note
+    // instead of waiting 8s on a "[data-agent-idx=undefined]" locator.
+    if ((a.action === "click" || a.action === "type") && target === undefined) {
+      const note = `no element at index ${a.index}`;
+      emit({ n, action: a.action, reasoning: a.reasoning, ok: false, note });
+      history.push(`${n}. ${a.action} (FAILED: ${note})`);
+      continue;
+    }
+
     // Execute the action.
     let ok = true;
     let note: string | undefined;
@@ -176,7 +195,7 @@ export async function drive(
       } else if (a.action === "navigate") {
         await page.goto(a.url, { waitUntil: "domcontentloaded", timeout: 20000 });
       } else if (a.action === "scroll") {
-        await page.mouse.wheel(0, 700);
+        await page.mouse.wheel(0, a.direction === "up" ? -700 : 700);
       }
       await page.waitForTimeout(600);
     } catch (err: any) {

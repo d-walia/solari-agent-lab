@@ -23,7 +23,10 @@ function required(name: string): string {
 export const config = {
   solariKey: required("SOLARI_API_KEY"),
   anthropicKey: required("ANTHROPIC_API_KEY"),
-  concurrency: Number(process.env.MAX_CONCURRENCY ?? 8),
+  concurrency: (() => {
+    const c = Math.floor(Number(process.env.MAX_CONCURRENCY ?? 8));
+    return Number.isFinite(c) && c > 0 ? c : 8;
+  })(),
   // The LLM that drives the browser agents. Override with AGENT_MODEL in .env.
   agentModel: process.env.AGENT_MODEL ?? "claude-sonnet-5",
   // Optional Cloudflare AI Gateway. When set, Anthropic calls route through the
@@ -52,7 +55,7 @@ export async function launchBrowser(opts?: Record<string, any>, tries = 4): Prom
       return await browsers.launch(opts as any);
     } catch (err) {
       lastErr = err;
-      await sleep(2000 * (i + 1) + Math.random() * 800);
+      if (i < tries - 1) await sleep(2000 * (i + 1) + Math.random() * 800);
     }
   }
   throw lastErr;
@@ -64,13 +67,14 @@ export async function launchBrowser(opts?: Record<string, any>, tries = 4): Prom
  */
 export async function downloadReplay(sessionId: string, tries = 8): Promise<string | null> {
   for (let i = 0; i < tries; i++) {
-    await new Promise((r) => setTimeout(r, 3000));
+    await sleep(3000);
     try {
       const blob = await (browsers as any).sessions.downloadReplay(sessionId);
       return blob.toString();
-    } catch (err: any) {
-      if (err?.status === 404) continue;
-      return null;
+    } catch {
+      // Usually a 404 because the replay hasn't uploaded yet; could be transient.
+      // Retry regardless of the error shape (SDK error types aren't guaranteed),
+      // and only give up after exhausting all tries.
     }
   }
   return null;

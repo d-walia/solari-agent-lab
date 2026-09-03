@@ -2,7 +2,7 @@
  * Slipstream engine — run a plain agent at each flow K times, score how often
  * it gets through, and cluster the barriers when it doesn't.
  */
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { browsers, config, launchBrowser } from "../../core/solari.js";
 import { drive } from "../../core/agent.js";
 import { pool, type Settled } from "../../core/pool.js";
@@ -97,4 +97,10 @@ export async function run(opts: { flows: Flow[]; runs: number }): Promise<void> 
 
   console.log(`\nAgent-readiness: ${readiness}%   Report: reports/slipstream.html`);
   if (barriers.length) console.log(`Top barrier: ${barriers[0][0]} (${barriers[0][1]}×)`);
+
+  const blockedSessions = attempts.flatMap((a) => (!a.got_through && a.sessionId ? [a.sessionId] : []));
+  if (blockedSessions.length) {
+    await writeFile("reports/slipstream-blocked-sessions.json", JSON.stringify(blockedSessions, null, 2));
+    console.log(`${blockedSessions.length} blocked sessions → reports/slipstream-blocked-sessions.json  (replay one: npm run replay -- <sessionId>)`);
+  }
 }

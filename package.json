@@ -7,6 +7,8 @@
   "scripts": {
     "gauntlet": "tsx src/tools/gauntlet/cli.ts",
     "debug:gauntlet": "tsx src/tools/gauntlet/debug.ts",
+    "debug": "tsx src/debug.ts",
+    "replay": "tsx src/replay.ts",
     "slipstream": "tsx src/tools/slipstream/cli.ts",
     "swarm": "tsx src/tools/swarm/cli.ts",
     "typecheck": "tsc --noEmit"

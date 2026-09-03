@@ -96,7 +96,8 @@ export async function run(opts: { trials: number; saveBaseline: boolean }): Prom
   const baseOverall = Object.keys(baseline).length
     ? Math.round(suite.reduce((s, t) => s + (baseline[t.id] ?? 0), 0) / suite.length)
     : undefined;
-  const overallDelta = baseOverall === undefined ? "first run — no baseline yet" : `${overall - baseOverall >= 0 ? "+" : ""}${overall - baseOverall} pts vs last run`;
+  const vsBaseline = baseOverall === undefined ? "—" : `${overall - baseOverall >= 0 ? "+" : ""}${overall - baseOverall}`;
+  const overallDelta = baseOverall === undefined ? "first run — no baseline yet" : `${vsBaseline} pts vs last run`;
 
   await writeReport("reports/gauntlet.html", {
     title: "Gauntlet",
@@ -104,7 +105,7 @@ export async function run(opts: { trials: number; saveBaseline: boolean }): Prom
     accent: "#db4e1b",
     kpis: [
       kpi(`${overall}%`, "overall pass rate"),
-      kpi(overallDelta.split(" ")[0], "vs baseline"),
+      kpi(vsBaseline, "vs baseline"),
       kpi(String(regressed), "tasks regressed"),
     ],
     rows,
@@ -112,6 +113,13 @@ export async function run(opts: { trials: number; saveBaseline: boolean }): Prom
 
   console.log(`\nOverall: ${overall}%  (${overallDelta})`);
   console.log(`Report: reports/gauntlet.html`);
+
+  // Forensics: save the sessions of failed trials so their replays are retrievable.
+  const failedSessions = results.flatMap((s) => (s.ok && !s.value.passed && s.value.sessionId ? [s.value.sessionId] : []));
+  if (failedSessions.length) {
+    await writeFile("reports/gauntlet-failed-sessions.json", JSON.stringify(failedSessions, null, 2));
+    console.log(`${failedSessions.length} failed sessions → reports/gauntlet-failed-sessions.json  (replay one: npm run replay -- <sessionId>)`);
+  }
 
   if (opts.saveBaseline) {
     await writeFile(BASELINE, JSON.stringify(rates, null, 2));

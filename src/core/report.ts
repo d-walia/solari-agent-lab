@@ -4,10 +4,16 @@
  */
 import { writeFile } from "node:fs/promises";
 
+/** Escape text before it goes into HTML — agent/LLM output can contain <, >, &, ". */
+export function esc(s: unknown): string {
+  return String(s ?? "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
+}
+
 const SHELL = (title: string, accent: string, body: string) => `<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${title}</title>
+<title>${esc(title)}</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
   :root{--ground:#f4f6f8;--surface:#fff;--surface2:#eef0f3;--ink:#15181c;--soft:#4a4e55;--muted:#767c85;--border:#e0e4ea;--accent:${accent};--fail:#cb3a33;}
@@ -32,23 +38,26 @@ const SHELL = (title: string, accent: string, body: string) => `<!doctype html>
 </style></head><body><div class="wrap">${body}</div></body></html>`;
 
 export function kpi(v: string, k: string): string {
-  return `<div class="kpi"><div class="v">${v}</div><div class="k">${k}</div></div>`;
+  return `<div class="kpi"><div class="v">${esc(v)}</div><div class="k">${esc(k)}</div></div>`;
 }
 
-export function bar(name: string, sub: string, pct: number, replayUrl?: string): string {
-  const link = replayUrl ? ` <a href="${replayUrl}">replay ↗</a>` : "";
-  return `<div class="row"><div class="name">${name}<small>${sub}${link}</small></div>` +
+export function bar(name: string, sub: string, pct: number): string {
+  return `<div class="row"><div class="name">${esc(name)}<small>${esc(sub)}</small></div>` +
     `<div class="rate">${pct}%</div><div class="bar"><span style="width:${Math.max(0, Math.min(100, pct))}%"></span></div></div>`;
 }
 
 /** A section heading inside the report body. */
 export function section(label: string): string {
-  return `<div class="seclabel">${label}</div>`;
+  return `<div class="seclabel">${esc(label)}</div>`;
 }
 
-/** A clustered-reason line: a count and the reason (wrap verbatim quotes in <em>). */
-export function cluster(count: number, text: string): string {
-  return `<div class="cluster"><span class="c">×${count}</span><span class="t">${text}</span></div>`;
+/**
+ * A clustered-reason line: a count and pre-built markup. Callers must esc() any
+ * dynamic text they interpolate, since this intentionally passes markup through
+ * (e.g. an <em> quote).
+ */
+export function cluster(count: number, markup: string): string {
+  return `<div class="cluster"><span class="c">×${count}</span><span class="t">${markup}</span></div>`;
 }
 
 export async function writeReport(
@@ -56,7 +65,7 @@ export async function writeReport(
   opts: { title: string; subtitle: string; accent?: string; kpis: string[]; rows: string[]; extra?: string },
 ): Promise<void> {
   const body =
-    `<h1>${opts.title}</h1><div class="sub">${opts.subtitle}</div>` +
+    `<h1>${esc(opts.title)}</h1><div class="sub">${esc(opts.subtitle)}</div>` +
     `<div class="kpis">${opts.kpis.join("")}</div>` +
     opts.rows.join("") +
     (opts.extra ?? "");

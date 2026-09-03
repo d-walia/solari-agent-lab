@@ -15,7 +15,10 @@ export async function pool<T>(
   jobs: Array<() => Promise<T>>,
   onSettle?: (index: number, result: Settled<T>) => void,
 ): Promise<Array<Settled<T>>> {
-  const width = Math.max(1, Math.floor(concurrency));
+  // Guard a bad cap (e.g. MAX_CONCURRENCY=abc → NaN): NaN would create zero
+  // workers and silently return an all-empty result instead of running anything.
+  const n = Math.floor(concurrency);
+  const width = Number.isFinite(n) && n > 0 ? n : 1;
   const results = new Array<Settled<T>>(jobs.length);
   let next = 0;
 
@@ -36,9 +39,4 @@ export async function pool<T>(
     Array.from({ length: Math.min(width, jobs.length) }, () => worker()),
   );
   return results;
-}
-
-/** Convenience: keep only the jobs that succeeded. */
-export function values<T>(settled: Array<Settled<T>>): T[] {
-  return settled.filter((s): s is { ok: true; value: T } => s.ok).map((s) => s.value);
 }
