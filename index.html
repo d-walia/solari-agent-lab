@@ -92,13 +92,10 @@
   <div class="wrap">
     <p class="kicker"><span class="dot"></span>Built on Solari</p>
     <h1>Solari Agent<span class="p"> Lab</span></h1>
-    <p class="sub">Three tools for the agentic era. Each one does something you can only do by running hundreds of real browser agents at once.</p>
+    <p class="sub" style="max-width:60ch">I'm a marketer who builds AI agents on the side. As more of the web gets used by agents instead of people, three questions kept bugging me, and none of them had a clean answer: can you trust an agent to actually finish a job, can agents even get through a product built for humans, and where do real people still give up. So I built a small tool to answer each one.</p>
     <div class="cta">
       <a class="btn solid" href="https://github.com/d-walia/solari-agent-lab">View on GitHub</a>
       <a class="btn" href="https://d-walia.github.io/solari-agent-lab/demo-funnel/">Try the demo funnel</a>
-    </div>
-    <div class="thesis" style="margin-top:38px">
-      <p>You can't run these on a laptop. A single machine chokes after a handful of real browsers, and it needs you sitting there. These need a <strong>fleet</strong> of cloud machines running in parallel, unattended. That fleet is Solari.</p>
     </div>
   </div>
 </header>
@@ -109,9 +106,9 @@
     <div class="prose">
       <p class="eyebrow">Gauntlet · agent reliability</p>
       <h2>How reliably does your agent actually finish?</h2>
-      <p class="hook">You can't test an AI agent by running it once. Gauntlet runs the same task hundreds of times in parallel and gives you a real success rate.</p>
+      <p class="hook">An agent won't do the same thing twice, so running a task once tells you almost nothing. Gauntlet runs it a few hundred times and reports how often it actually finishes, and whether that slipped since your last change.</p>
       <ul class="pts">
-        <li>Runs one task many times to measure a distribution, not a pass/fail</li>
+        <li>Reports a success rate over many runs, so one lucky pass doesn't fool you</li>
         <li>Catches regressions between versions ("88% &rarr; 61% after that prompt change")</li>
         <li>Saves the failing sessions so you can replay exactly where it broke</li>
       </ul>
@@ -144,7 +141,7 @@
     <div class="prose">
       <p class="eyebrow">Slipstream · agent-readiness</p>
       <h2>Can AI agents even get through your product?</h2>
-      <p class="hook">The static "readiness score" scanners tell you if an agent can <em>find</em> you. Slipstream tells you if it can actually <em>finish</em> — sign up, check out, book — and where it gets stuck.</p>
+      <p class="hook">People are starting to send AI agents to do things on websites, and a lot of sites that work fine for a human quietly break for an agent. Slipstream sends real agents through your signup or checkout and shows you where they get stuck.</p>
       <ul class="pts">
         <li>Runs real agents through your real flows, several times each</li>
         <li>Sorts every failure into a barrier type, with a concrete fix</li>
@@ -176,11 +173,11 @@
     <div class="prose">
       <p class="eyebrow">Swarm · synthetic users</p>
       <h2>Where do real users drop off, and why?</h2>
-      <p class="hook">Analytics tells you <em>where</em> people leave. It never tells you <em>why</em>. Swarm sends a swarm of persona-driven users through your funnel, and each one tells you why it quit.</p>
+      <p class="hook">Your analytics knows where people quit a funnel. It has no idea why, because the people who left aren't around to ask. Swarm runs a batch of AI users through the funnel, each with a different personality, and the ones that quit tell you what stopped them.</p>
       <ul class="pts">
         <li>Distinct personas — impatient, skeptical, non-technical — with real behavior differences</li>
         <li>A completion rate per persona, plus the clustered reasons the rest bailed</li>
-        <li>The qualitative "why" of user research, at the scale of analytics</li>
+        <li>Enough runs to see real patterns in why people leave, not one-off opinions</li>
       </ul>
       <div class="tlinks">
         <a href="https://github.com/d-walia/solari-agent-lab#swarm">Docs</a>
@@ -205,8 +202,8 @@
 
 <section class="why">
   <div class="wrap">
-    <h2>One engine, three questions</h2>
-    <p>All three run on a single shared agent driver and a worker pool that fans out across Solari's cloud browsers. They differ only in how they steer the agent and how they score it: a reliability rate, a barrier list, or a funnel. Built with AI, fast, on purpose.</p>
+    <h2>Under the hood</h2>
+    <p>All three tools are the same thing underneath: one agent that drives a real browser, and a queue that runs a lot of them at once on Solari. The only real difference is the question each one answers, and how it scores what it finds.</p>
   </div>
 </section>
 
