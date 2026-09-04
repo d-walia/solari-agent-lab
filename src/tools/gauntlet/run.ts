@@ -40,16 +40,17 @@ async function runTrial(task: Task): Promise<Trial> {
 
 const BASELINE = "reports/gauntlet-baseline.json";
 
-export async function run(opts: { trials: number; saveBaseline: boolean }): Promise<void> {
+export async function run(opts: { trials: number; saveBaseline: boolean; tasks?: Task[] }): Promise<void> {
   await mkdir("reports", { recursive: true });
+  const tasks = opts.tasks ?? suite;
 
   // Build the flat job list: every task × every trial.
   const plan: Task[] = [];
-  for (const task of suite) for (let k = 0; k < opts.trials; k++) plan.push(task);
+  for (const task of tasks) for (let k = 0; k < opts.trials; k++) plan.push(task);
 
   const total = plan.length;
   let done = 0;
-  process.stdout.write(`Running ${total} trials (${suite.length} tasks × ${opts.trials}), ${config.concurrency} at a time…\n`);
+  process.stdout.write(`Running ${total} trials (${tasks.length} tasks × ${opts.trials}), ${config.concurrency} at a time…\n`);
 
   let results: Array<Settled<Trial>>;
   try {
@@ -74,7 +75,7 @@ export async function run(opts: { trials: number; saveBaseline: boolean }): Prom
   let passedAll = 0;
   let regressed = 0;
 
-  for (const task of suite) {
+  for (const task of tasks) {
     const trials = byTask.get(task.id) ?? [];
     const passed = trials.filter((t) => t.passed).length;
     const rate = trials.length ? Math.round((passed / trials.length) * 100) : 0;
@@ -94,14 +95,14 @@ export async function run(opts: { trials: number; saveBaseline: boolean }): Prom
 
   const overall = total ? Math.round((passedAll / total) * 100) : 0;
   const baseOverall = Object.keys(baseline).length
-    ? Math.round(suite.reduce((s, t) => s + (baseline[t.id] ?? 0), 0) / suite.length)
+    ? Math.round(tasks.reduce((s, t) => s + (baseline[t.id] ?? 0), 0) / tasks.length)
     : undefined;
   const vsBaseline = baseOverall === undefined ? "—" : `${overall - baseOverall >= 0 ? "+" : ""}${overall - baseOverall}`;
   const overallDelta = baseOverall === undefined ? "first run — no baseline yet" : `${vsBaseline} pts vs last run`;
 
   await writeReport("reports/gauntlet.html", {
     title: "Gauntlet",
-    subtitle: `${total} trials · ${suite.length} tasks · agent reliability`,
+    subtitle: `${total} trials · ${tasks.length} tasks · agent reliability`,
     accent: "#db4e1b",
     kpis: [
       kpi(`${overall}%`, "overall pass rate"),
