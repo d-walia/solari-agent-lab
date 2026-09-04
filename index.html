@@ -32,6 +32,10 @@
   header h1{font-size:clamp(2.8rem,1.9rem+4vw,4.6rem);line-height:.98;font-weight:700;margin:20px 0 0}
   header h1 .p{color:var(--accent)}
   .sub{font-size:clamp(1.1rem,1rem+.6vw,1.35rem);color:var(--soft);max-width:44ch;margin:20px auto 0}
+  .qlist{max-width:58ch;margin:26px auto 0;display:flex;flex-direction:column;gap:12px;text-align:left}
+  .qlist p{margin:0;position:relative;padding-left:22px;font-family:var(--font-d);font-weight:600;font-size:clamp(1.05rem,1rem+.35vw,1.25rem);color:var(--ink);letter-spacing:-.01em;line-height:1.32}
+  .qlist p::before{content:"";position:absolute;left:2px;top:.55em;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .sub2{margin:24px auto 0;color:var(--soft);font-size:1.08rem}
   .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
   .btn{font-family:var(--font-m);font-size:13px;letter-spacing:.04em;text-decoration:none;padding:12px 22px;border-radius:10px;border:1px solid var(--border2);color:var(--ink);background:var(--surface);transition:.15s}
   .btn:hover{border-color:var(--accent);color:var(--accent)}
@@ -92,7 +96,13 @@
   <div class="wrap">
     <p class="kicker"><span class="dot"></span>Built on Solari</p>
     <h1>Solari Agent<span class="p"> Lab</span></h1>
-    <p class="sub" style="max-width:60ch">Most of the web still assumes a person is on the other end. That's changing fast, and it left me with a few questions I couldn't find good answers to. Can you trust an agent to actually finish a task, not just start one? Can an agent even get through a site built for humans? And when a real person is there, where do they give up, and why? So I built three small tools, one per question.</p>
+    <p class="sub" style="max-width:56ch">Most of the web still assumes a person is on the other end. That's changing fast, and it left me with a few questions I couldn't find good answers to.</p>
+    <div class="qlist">
+      <p>Can you trust an agent to actually finish a task, not just start one?</p>
+      <p>Can an agent even get through a site built for humans?</p>
+      <p>And when a real person is there, where do they give up, and why?</p>
+    </div>
+    <p class="sub2">So I built three small tools, one per question.</p>
     <div class="cta">
       <a class="btn solid" href="https://github.com/d-walia/solari-agent-lab">View on GitHub</a>
       <a class="btn" href="https://d-walia.github.io/solari-agent-lab/demo-funnel/">Try the demo funnel</a>
@@ -203,7 +213,7 @@
 <section class="why">
   <div class="wrap">
     <h2>Under the hood</h2>
-    <p>All three tools are the same thing underneath: one agent that drives a real browser, and a queue that runs a lot of them at once on Solari. The only real difference is the question each one answers, and how it scores what it finds.</p>
+    <p>Three different questions, so three different tools. What they share is the hard part: an agent that can actually drive a real browser the way a person would, and the plumbing to run a lot of them at once on Solari. I built that engine once, and it's what made all three possible.</p>
   </div>
 </section>
 
