@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Solari Agent Lab</title>
+<meta name="description" content="Three tools for the agentic era, built on Solari: Gauntlet (agent reliability), Slipstream (agent-readiness), and Swarm (synthetic users).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ground:#f4f6f8;--surface:#fff;--surface2:#eaeef2;--ink:#14181c;--soft:#454b53;--muted:#767c85;
+    --border:#e0e4ea;--border2:#cbd2da;--ember:#db4e1b;--teal:#0e8a8f;--violet:#6a4bd6;
+    --accent:var(--ember);
+    --font-d:"Bricolage Grotesque",system-ui,sans-serif;--font-b:"IBM Plex Sans",system-ui,sans-serif;--font-m:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  @media(prefers-color-scheme:dark){:root{
+    --ground:#0e1013;--surface:#15181c;--surface2:#1d2126;--ink:#eceef1;--soft:#b4b9c0;--muted:#828892;
+    --border:#242a30;--border2:#333a42;--ember:#ff6a38;--teal:#2bc6cc;--violet:#9a82ff;
+  }}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font:16.5px/1.62 var(--font-b);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+  a{color:inherit}
+  h1,h2,h3{font-family:var(--font-d);font-weight:600;letter-spacing:-.02em;margin:0}
+  .kicker{font-family:var(--font-m);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle}
+
+  /* hero */
+  header{padding:84px 0 56px;text-align:center}
+  header h1{font-size:clamp(2.8rem,1.9rem+4vw,4.6rem);line-height:.98;font-weight:700;margin:20px 0 0}
+  header h1 .p{color:var(--accent)}
+  .sub{font-size:clamp(1.1rem,1rem+.6vw,1.35rem);color:var(--soft);max-width:44ch;margin:20px auto 0}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+  .btn{font-family:var(--font-m);font-size:13px;letter-spacing:.04em;text-decoration:none;padding:12px 22px;border-radius:10px;border:1px solid var(--border2);color:var(--ink);background:var(--surface);transition:.15s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.solid{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.solid:hover{opacity:.9;color:#fff}
+
+  .thesis{max-width:640px;margin:8px auto 0;padding:22px 26px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;text-align:left}
+  .thesis p{margin:0;font-size:1.08rem;color:var(--ink)}
+  .thesis strong{color:var(--accent)}
+
+  /* tool blocks */
+  .tool{padding:52px 0;border-top:1px solid var(--border)}
+  .tool .wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+  .tool:nth-child(even) .prose{order:2}
+  @media(max-width:760px){.tool .wrap{grid-template-columns:1fr;gap:26px}.tool:nth-child(even) .prose{order:0}}
+  .eyebrow{font-family:var(--font-m);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .tool h2{font-size:2rem;margin:10px 0 6px}
+  .hook{font-size:1.12rem;color:var(--soft);margin:0 0 18px}
+  ul.pts{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-direction:column;gap:9px}
+  ul.pts li{position:relative;padding-left:20px;color:var(--ink);font-size:.98rem}
+  ul.pts li::before{content:"";position:absolute;left:2px;top:.62em;width:7px;height:7px;border-radius:2px;background:var(--accent)}
+  .tlinks{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--font-m);font-size:13px}
+  .tlinks a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
+  .tlinks a:hover{border-bottom-color:var(--accent)}
+
+  /* report preview mock */
+  .mock{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 12px 30px rgba(0,0,0,.06);overflow:hidden}
+  .mock .bar{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid var(--border);background:var(--surface2)}
+  .mock .bar span{width:10px;height:10px;border-radius:50%;border:1px solid var(--border2)}
+  .mock .bar .t{margin-left:6px;font-family:var(--font-m);font-size:11px;color:var(--muted)}
+  .mock .body{padding:18px}
+  .kpis{display:flex;gap:22px;margin-bottom:16px}
+  .kpi .v{font-family:var(--font-d);font-size:1.7rem;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+  .kpi .k{font-family:var(--font-m);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .row{display:grid;grid-template-columns:1fr 44px 90px;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border);font-size:.82rem}
+  .row .rt{font-family:var(--font-m);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+  .track{height:7px;border-radius:100px;background:var(--surface2);overflow:hidden}
+  .track>i{display:block;height:100%;border-radius:100px}
+  .pass{color:#1f8a54}.warn{color:#b5851b}.fail{color:#cb3a33}
+  .fpass{background:#1f8a54}.fwarn{background:#b5851b}.ffail{background:#cb3a33}
+  .note{margin-top:14px;font-family:var(--font-m);font-size:11px;color:var(--muted)}
+  .cl{display:flex;gap:10px;align-items:baseline;background:var(--surface2);border-radius:8px;padding:9px 12px;margin-top:8px;font-size:.85rem}
+  .cl b{font-family:var(--font-m);color:var(--fail,#cb3a33)}
+
+  /* why */
+  .why{padding:56px 0;border-top:1px solid var(--border);text-align:center}
+  .why h2{font-size:1.6rem;margin-bottom:12px}
+  .why p{max-width:60ch;margin:0 auto;color:var(--soft)}
+
+  footer{padding:40px 0 60px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-family:var(--font-m);font-size:12.5px}
+  footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--border2)}
+  footer .fl{display:flex;gap:20px;justify-content:center;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker"><span class="dot"></span>Built on Solari</p>
+    <h1>Solari Agent<span class="p"> Lab</span></h1>
+    <p class="sub">Three tools for the agentic era. Each one does something you can only do by running hundreds of real browser agents at once.</p>
+    <div class="cta">
+      <a class="btn solid" href="https://github.com/d-walia/solari-agent-lab">View on GitHub</a>
+      <a class="btn" href="https://d-walia.github.io/solari-agent-lab/demo-funnel/">Try the demo funnel</a>
+    </div>
+    <div class="thesis" style="margin-top:38px">
+      <p>You can't run these on a laptop. A single machine chokes after a handful of real browsers, and it needs you sitting there. These need a <strong>fleet</strong> of cloud machines running in parallel, unattended. That fleet is Solari.</p>
+    </div>
+  </div>
+</header>
+
+<!-- GAUNTLET -->
+<section class="tool" style="--accent:var(--ember)">
+  <div class="wrap">
+    <div class="prose">
+      <p class="eyebrow">Gauntlet · agent reliability</p>
+      <h2>How reliably does your agent actually finish?</h2>
+      <p class="hook">You can't test an AI agent by running it once. Gauntlet runs the same task hundreds of times in parallel and gives you a real success rate.</p>
+      <ul class="pts">
+        <li>Runs one task many times to measure a distribution, not a pass/fail</li>
+        <li>Catches regressions between versions ("88% &rarr; 61% after that prompt change")</li>
+        <li>Saves the failing sessions so you can replay exactly where it broke</li>
+      </ul>
+      <div class="tlinks">
+        <a href="https://github.com/d-walia/solari-agent-lab#gauntlet">Docs</a>
+        <a href="https://github.com/d-walia/solari-agent-lab/tree/main/src/tools/gauntlet">Source</a>
+      </div>
+    </div>
+    <div class="mock">
+      <div class="bar"><span></span><span></span><span></span><span class="t">reports/gauntlet.html</span></div>
+      <div class="body">
+        <div class="kpis">
+          <div class="kpi"><div class="v">75%</div><div class="k">overall pass rate</div></div>
+          <div class="kpi"><div class="v fail">−17</div><div class="k">vs baseline</div></div>
+          <div class="kpi"><div class="v">2</div><div class="k">tasks regressed</div></div>
+        </div>
+        <div class="row"><span>standard checkout</span><span class="rt pass">100%</span><span class="track"><i class="fpass" style="width:100%"></i></span></div>
+        <div class="row"><span>two-item cart</span><span class="rt pass">90%</span><span class="track"><i class="fpass" style="width:90%"></i></span></div>
+        <div class="row"><span>coupon step</span><span class="rt warn">73%</span><span class="track"><i class="fwarn" style="width:73%"></i></span></div>
+        <div class="row"><span>broken-image account</span><span class="rt fail">0%</span><span class="track"><i class="ffail" style="width:3%"></i></span></div>
+        <p class="note">↳ a reliability cliff a single test pass would never reveal.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIPSTREAM -->
+<section class="tool" style="--accent:var(--teal)">
+  <div class="wrap">
+    <div class="prose">
+      <p class="eyebrow">Slipstream · agent-readiness</p>
+      <h2>Can AI agents even get through your product?</h2>
+      <p class="hook">The static "readiness score" scanners tell you if an agent can <em>find</em> you. Slipstream tells you if it can actually <em>finish</em> — sign up, check out, book — and where it gets stuck.</p>
+      <ul class="pts">
+        <li>Runs real agents through your real flows, several times each</li>
+        <li>Sorts every failure into a barrier type, with a concrete fix</li>
+        <li>Catches the functional breakage the scanners can't see</li>
+      </ul>
+      <div class="tlinks">
+        <a href="https://github.com/d-walia/solari-agent-lab#slipstream">Docs</a>
+        <a href="https://d-walia.github.io/solari-agent-lab/demo-funnel/">Live test funnel</a>
+      </div>
+    </div>
+    <div class="mock">
+      <div class="bar"><span></span><span></span><span></span><span class="t">reports/slipstream.html</span></div>
+      <div class="body">
+        <div class="kpis">
+          <div class="kpi"><div class="v">34%</div><div class="k">agent completion</div></div>
+          <div class="kpi"><div class="v">3</div><div class="k">barrier types</div></div>
+        </div>
+        <div class="cl"><b>×11</b><span><b style="color:var(--ink)">ambiguity</b> — the icon-only "continue" button; add a label / ARIA.</span></div>
+        <div class="cl"><b>×6</b><span><b style="color:var(--ink)">auth-wall</b> — a login step agents can't pass.</span></div>
+        <div class="cl"><b>×3</b><span><b style="color:var(--ink)">timing</b> — content not ready when the agent acted.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SWARM -->
+<section class="tool" style="--accent:var(--violet)">
+  <div class="wrap">
+    <div class="prose">
+      <p class="eyebrow">Swarm · synthetic users</p>
+      <h2>Where do real users drop off, and why?</h2>
+      <p class="hook">Analytics tells you <em>where</em> people leave. It never tells you <em>why</em>. Swarm sends a swarm of persona-driven users through your funnel, and each one tells you why it quit.</p>
+      <ul class="pts">
+        <li>Distinct personas — impatient, skeptical, non-technical — with real behavior differences</li>
+        <li>A completion rate per persona, plus the clustered reasons the rest bailed</li>
+        <li>The qualitative "why" of user research, at the scale of analytics</li>
+      </ul>
+      <div class="tlinks">
+        <a href="https://github.com/d-walia/solari-agent-lab#swarm">Docs</a>
+        <a href="https://github.com/d-walia/solari-agent-lab/tree/main/src/tools/swarm">Source</a>
+      </div>
+    </div>
+    <div class="mock">
+      <div class="bar"><span></span><span></span><span></span><span class="t">reports/swarm.html</span></div>
+      <div class="body">
+        <div class="kpis">
+          <div class="kpi"><div class="v">28%</div><div class="k">reached the goal</div></div>
+          <div class="kpi"><div class="v">50</div><div class="k">personas run</div></div>
+        </div>
+        <div class="row"><span>Reached pricing</span><span class="rt">82%</span><span class="track"><i style="width:82%;background:var(--violet)"></i></span></div>
+        <div class="row"><span>Started signup</span><span class="rt">56%</span><span class="track"><i style="width:56%;background:var(--violet)"></i></span></div>
+        <div class="row"><span>Reached dashboard</span><span class="rt">28%</span><span class="track"><i style="width:28%;background:var(--violet)"></i></span></div>
+        <div class="cl"><b>×11</b><span>abandoned at the coupon field — thought a code was required.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="why">
+  <div class="wrap">
+    <h2>One engine, three questions</h2>
+    <p>All three run on a single shared agent driver and a worker pool that fans out across Solari's cloud browsers. They differ only in how they steer the agent and how they score it: a reliability rate, a barrier list, or a funnel. Built with AI, fast, on purpose.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fl">
+      <a href="https://github.com/d-walia/solari-agent-lab">GitHub</a>
+      <a href="https://dw-digital-consulting.com/products">More products</a>
+      <a href="https://getsolari.com">Solari</a>
+    </div>
+    Built by Dhruv Walia on Solari. Sample reports shown; run the tools for your own numbers.
+  </div>
+</footer>
+
+</body>
+</html>
