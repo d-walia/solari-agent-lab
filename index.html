@@ -116,12 +116,7 @@
     <div class="prose">
       <p class="eyebrow">Gauntlet · agent reliability</p>
       <h2>How reliably does your agent actually finish?</h2>
-      <p class="hook">An agent almost never does a task the same way twice, so running it once tells you almost nothing. I ran a checkout on a test store a few hundred times. It passed nearly every run, except on one account the store breaks on purpose, where it failed every single time. You only catch that if you run it enough to get a real number, and re-run it when you change something.</p>
-      <ul class="pts">
-        <li>A real success rate, from hundreds of runs</li>
-        <li>Flags when a change quietly makes the agent worse</li>
-        <li>Keeps the runs that failed so you can watch where they broke</li>
-      </ul>
+      <p class="hook">An agent rarely does a task the same way twice, so I run it a few hundred times and measure how often it actually finishes, and whether a change made it worse.</p>
       <div class="tlinks">
         <a href="https://github.com/d-walia/solari-agent-lab#gauntlet">Docs</a>
         <a href="https://github.com/d-walia/solari-agent-lab/tree/main/src/tools/gauntlet">Source</a>
@@ -151,12 +146,7 @@
     <div class="prose">
       <p class="eyebrow">Slipstream · agent-readiness</p>
       <h2>Can AI agents even get through your product?</h2>
-      <p class="hook">People are starting to point agents at real sites to do real things, and plenty of sites that work fine for a person quietly fall apart for an agent. Slipstream sends agents through a signup or checkout and watches where they get stuck. On a funnel I broke on purpose, it kept snagging on a "continue" button that was just an arrow with no label. An agent can't tell what that does.</p>
-      <ul class="pts">
-        <li>Runs real agents through your real flows, a few times each</li>
-        <li>Names what stopped each one, and how to fix it</li>
-        <li>Finds the breakage a static readiness score misses</li>
-      </ul>
+      <p class="hook">Some sites work fine for a person but quietly break for an agent. Slipstream runs agents through a real signup or checkout and shows exactly where they get stuck.</p>
       <div class="tlinks">
         <a href="https://github.com/d-walia/solari-agent-lab#slipstream">Docs</a>
         <a href="https://d-walia.github.io/solari-agent-lab/demo-funnel/">Live test funnel</a>
@@ -183,12 +173,7 @@
     <div class="prose">
       <p class="eyebrow">Swarm · synthetic users</p>
       <h2>Where do real users drop off, and why?</h2>
-      <p class="hook">Your analytics can tell you 70% of people quit at step two. It can't tell you why, because those people are gone. Swarm runs a batch of AI users through the funnel instead, each with its own personality, and every one that quits says what stopped it. On my test funnel the impatient ones bailed at a promo-code field. They figured a code was required. It wasn't.</p>
-      <ul class="pts">
-        <li>Different personalities, so they get stuck in different places</li>
-        <li>A completion rate per type, plus the reasons the rest left</li>
-        <li>Run enough of them and the patterns are real, not guesses</li>
-      </ul>
+      <p class="hook">Analytics tells you where people quit, never why. Swarm runs AI users with different personalities through the funnel, and every one that quits tells you what stopped it.</p>
       <div class="tlinks">
         <a href="https://github.com/d-walia/solari-agent-lab#swarm">Docs</a>
         <a href="https://github.com/d-walia/solari-agent-lab/tree/main/src/tools/swarm">Source</a>
