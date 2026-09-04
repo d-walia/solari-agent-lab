@@ -92,7 +92,7 @@
   <div class="wrap">
     <p class="kicker"><span class="dot"></span>Built on Solari</p>
     <h1>Solari Agent<span class="p"> Lab</span></h1>
-    <p class="sub" style="max-width:60ch">I'm a marketer who builds AI agents on the side. As more of the web gets used by agents instead of people, three questions kept bugging me, and none of them had a clean answer: can you trust an agent to actually finish a job, can agents even get through a product built for humans, and where do real people still give up. So I built a small tool to answer each one.</p>
+    <p class="sub" style="max-width:60ch">Most of the web still assumes a person is on the other end. That's changing fast, and it left me with a few questions I couldn't find good answers to. Can you trust an agent to actually finish a task, not just start one? Can an agent even get through a site built for humans? And when a real person is there, where do they give up, and why? So I built three small tools, one per question.</p>
     <div class="cta">
       <a class="btn solid" href="https://github.com/d-walia/solari-agent-lab">View on GitHub</a>
       <a class="btn" href="https://d-walia.github.io/solari-agent-lab/demo-funnel/">Try the demo funnel</a>
@@ -106,11 +106,11 @@
     <div class="prose">
       <p class="eyebrow">Gauntlet · agent reliability</p>
       <h2>How reliably does your agent actually finish?</h2>
-      <p class="hook">An agent won't do the same thing twice, so running a task once tells you almost nothing. Gauntlet runs it a few hundred times and reports how often it actually finishes, and whether that slipped since your last change.</p>
+      <p class="hook">An agent almost never does a task the same way twice, so running it once tells you almost nothing. I ran a checkout on a test store a few hundred times. It passed nearly every run, except on one account the store breaks on purpose, where it failed every single time. You only catch that if you run it enough to get a real number, and re-run it when you change something.</p>
       <ul class="pts">
-        <li>Reports a success rate over many runs, so one lucky pass doesn't fool you</li>
-        <li>Catches regressions between versions ("88% &rarr; 61% after that prompt change")</li>
-        <li>Saves the failing sessions so you can replay exactly where it broke</li>
+        <li>A real success rate, from hundreds of runs</li>
+        <li>Flags when a change quietly makes the agent worse</li>
+        <li>Keeps the runs that failed so you can watch where they broke</li>
       </ul>
       <div class="tlinks">
         <a href="https://github.com/d-walia/solari-agent-lab#gauntlet">Docs</a>
@@ -141,11 +141,11 @@
     <div class="prose">
       <p class="eyebrow">Slipstream · agent-readiness</p>
       <h2>Can AI agents even get through your product?</h2>
-      <p class="hook">People are starting to send AI agents to do things on websites, and a lot of sites that work fine for a human quietly break for an agent. Slipstream sends real agents through your signup or checkout and shows you where they get stuck.</p>
+      <p class="hook">People are starting to point agents at real sites to do real things, and plenty of sites that work fine for a person quietly fall apart for an agent. Slipstream sends agents through a signup or checkout and watches where they get stuck. On a funnel I broke on purpose, it kept snagging on a "continue" button that was just an arrow with no label. An agent can't tell what that does.</p>
       <ul class="pts">
-        <li>Runs real agents through your real flows, several times each</li>
-        <li>Sorts every failure into a barrier type, with a concrete fix</li>
-        <li>Catches the functional breakage the scanners can't see</li>
+        <li>Runs real agents through your real flows, a few times each</li>
+        <li>Names what stopped each one, and how to fix it</li>
+        <li>Finds the breakage a static readiness score misses</li>
       </ul>
       <div class="tlinks">
         <a href="https://github.com/d-walia/solari-agent-lab#slipstream">Docs</a>
@@ -173,11 +173,11 @@
     <div class="prose">
       <p class="eyebrow">Swarm · synthetic users</p>
       <h2>Where do real users drop off, and why?</h2>
-      <p class="hook">Your analytics knows where people quit a funnel. It has no idea why, because the people who left aren't around to ask. Swarm runs a batch of AI users through the funnel, each with a different personality, and the ones that quit tell you what stopped them.</p>
+      <p class="hook">Your analytics can tell you 70% of people quit at step two. It can't tell you why, because those people are gone. Swarm runs a batch of AI users through the funnel instead, each with its own personality, and every one that quits says what stopped it. On my test funnel the impatient ones bailed at a promo-code field. They figured a code was required. It wasn't.</p>
       <ul class="pts">
-        <li>Distinct personas — impatient, skeptical, non-technical — with real behavior differences</li>
-        <li>A completion rate per persona, plus the clustered reasons the rest bailed</li>
-        <li>Enough runs to see real patterns in why people leave, not one-off opinions</li>
+        <li>Different personalities, so they get stuck in different places</li>
+        <li>A completion rate per type, plus the reasons the rest left</li>
+        <li>Run enough of them and the patterns are real, not guesses</li>
       </ul>
       <div class="tlinks">
         <a href="https://github.com/d-walia/solari-agent-lab#swarm">Docs</a>
