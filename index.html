@@ -98,8 +98,8 @@
     <h1>Solari Agent<span class="p"> Lab</span></h1>
     <p class="sub" style="max-width:62ch">The hard part of building AI agents isn't building them, it's knowing whether they'll hold up when no one's watching. I'm about to run two experiments on Solari, brand audits at scale and a legal-advisor benchmark, as hundreds of unattended agent runs. Before I trust a single result, I run two pre-flight checks:</p>
     <div class="qlist">
-      <p>Can an agent even get through the flow it needs to run?</p>
-      <p>Once it's in, does it finish reliably, or quietly flake?</p>
+      <p>Does the agent actually finish the task reliably, or quietly flake?</p>
+      <p>And can it even get through the flow it needs to run in the first place?</p>
     </div>
     <p class="sub" style="max-width:62ch;margin-top:22px">So I'm not burning hours and credits on a run that's broken on step three, or trusting numbers an agent never actually earned.</p>
     <div class="cta">
@@ -108,6 +108,36 @@
     </div>
   </div>
 </header>
+
+<!-- SLIPSTREAM -->
+<section class="tool" style="--accent:var(--ember)">
+  <div class="wrap">
+    <div class="prose">
+      <p class="eyebrow">Gauntlet · agent reliability</p>
+      <h2>How reliably does your agent actually finish?</h2>
+      <p class="hook">An agent rarely does a task the same way twice, so I run it a few hundred times and measure how often it actually finishes, and whether a change made it worse.</p>
+      <div class="tlinks">
+        <a href="https://github.com/d-walia/solari-agent-lab#gauntlet">Docs</a>
+        <a href="https://github.com/d-walia/solari-agent-lab/tree/main/src/tools/gauntlet">Source</a>
+      </div>
+    </div>
+    <div class="mock">
+      <div class="bar"><span></span><span></span><span></span><span class="t">reports/gauntlet.html</span></div>
+      <div class="body">
+        <div class="kpis">
+          <div class="kpi"><div class="v">75%</div><div class="k">overall pass rate</div></div>
+          <div class="kpi"><div class="v fail">−17</div><div class="k">vs baseline</div></div>
+          <div class="kpi"><div class="v">2</div><div class="k">tasks regressed</div></div>
+        </div>
+        <div class="row"><span>standard checkout</span><span class="rt pass">100%</span><span class="track"><i class="fpass" style="width:100%"></i></span></div>
+        <div class="row"><span>two-item cart</span><span class="rt pass">90%</span><span class="track"><i class="fpass" style="width:90%"></i></span></div>
+        <div class="row"><span>coupon step</span><span class="rt warn">73%</span><span class="track"><i class="fwarn" style="width:73%"></i></span></div>
+        <div class="row"><span>broken-image account</span><span class="rt fail">0%</span><span class="track"><i class="ffail" style="width:3%"></i></span></div>
+        <p class="note">↳ a reliability cliff a single test pass would never reveal.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- SLIPSTREAM -->
 <section class="tool" style="--accent:var(--teal)">
@@ -131,36 +161,6 @@
         <div class="cl"><b>×11</b><span><b style="color:var(--ink)">ambiguity</b> — the icon-only "continue" button; add a label / ARIA.</span></div>
         <div class="cl"><b>×6</b><span><b style="color:var(--ink)">auth-wall</b> — a login step agents can't pass.</span></div>
         <div class="cl"><b>×3</b><span><b style="color:var(--ink)">timing</b> — content not ready when the agent acted.</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- GAUNTLET -->
-<section class="tool" style="--accent:var(--ember)">
-  <div class="wrap">
-    <div class="prose">
-      <p class="eyebrow">Gauntlet · agent reliability</p>
-      <h2>Once it's in, does it finish reliably?</h2>
-      <p class="hook">An agent rarely does a task the same way twice, so I run it a few hundred times and measure how often it actually finishes, and whether a change made it worse.</p>
-      <div class="tlinks">
-        <a href="https://github.com/d-walia/solari-agent-lab#gauntlet">Docs</a>
-        <a href="https://github.com/d-walia/solari-agent-lab/tree/main/src/tools/gauntlet">Source</a>
-      </div>
-    </div>
-    <div class="mock">
-      <div class="bar"><span></span><span></span><span></span><span class="t">reports/gauntlet.html</span></div>
-      <div class="body">
-        <div class="kpis">
-          <div class="kpi"><div class="v">75%</div><div class="k">overall pass rate</div></div>
-          <div class="kpi"><div class="v fail">−17</div><div class="k">vs baseline</div></div>
-          <div class="kpi"><div class="v">2</div><div class="k">tasks regressed</div></div>
-        </div>
-        <div class="row"><span>standard checkout</span><span class="rt pass">100%</span><span class="track"><i class="fpass" style="width:100%"></i></span></div>
-        <div class="row"><span>two-item cart</span><span class="rt pass">90%</span><span class="track"><i class="fpass" style="width:90%"></i></span></div>
-        <div class="row"><span>coupon step</span><span class="rt warn">73%</span><span class="track"><i class="fwarn" style="width:73%"></i></span></div>
-        <div class="row"><span>broken-image account</span><span class="rt fail">0%</span><span class="track"><i class="ffail" style="width:3%"></i></span></div>
-        <p class="note">↳ a reliability cliff a single test pass would never reveal.</p>
       </div>
     </div>
   </div>
