@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Solari Agent Lab</title>
-<meta name="description" content="Three tools for the agentic era, built on Solari: Gauntlet (agent reliability), Slipstream (agent-readiness), and Swarm (synthetic users).">
+<meta name="description" content="Two pre-flight checks for unattended agent runs, built on Solari: Slipstream (can an agent get through the flow?) and Gauntlet (does it finish reliably?).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -96,13 +96,12 @@
   <div class="wrap">
     <p class="kicker"><span class="dot"></span>Built on Solari</p>
     <h1>Solari Agent<span class="p"> Lab</span></h1>
-    <p class="sub" style="max-width:60ch">The hard part of building AI agents isn't building them, it's knowing whether they actually work. They pass once, flake the next time, and there's no dashboard for that. So I built three tools to find out, one question at a time:</p>
+    <p class="sub" style="max-width:62ch">The hard part of building AI agents isn't building them, it's knowing whether they'll hold up when no one's watching. I'm about to run two experiments on Solari, brand audits at scale and a legal-advisor benchmark, as hundreds of unattended agent runs. Before I trust a single result, I run two pre-flight checks:</p>
     <div class="qlist">
-      <p>Can you trust an agent to actually finish a task, not just start one?</p>
-      <p>Can an agent even get through a site built for humans?</p>
-      <p>And when a real person is there, where do they give up, and why?</p>
+      <p>Can an agent even get through the flow it needs to run?</p>
+      <p>Once it's in, does it finish reliably, or quietly flake?</p>
     </div>
-    <p class="sub" style="max-width:60ch;margin-top:22px">I run these as pre-flight checks before a big unattended agent run on Solari, so I'm not burning hours and credits on a flow that's quietly broken on step three.</p>
+    <p class="sub" style="max-width:62ch;margin-top:22px">So I'm not burning hours and credits on a run that's broken on step three, or trusting numbers an agent never actually earned.</p>
     <div class="cta">
       <a class="btn solid" href="https://github.com/d-walia/solari-agent-lab">View on GitHub</a>
       <a class="btn" href="https://d-walia.github.io/solari-agent-lab/demo-funnel/">Try the demo funnel</a>
@@ -110,43 +109,13 @@
   </div>
 </header>
 
-<!-- GAUNTLET -->
-<section class="tool" style="--accent:var(--ember)">
-  <div class="wrap">
-    <div class="prose">
-      <p class="eyebrow">Gauntlet · agent reliability</p>
-      <h2>How reliably does your agent actually finish?</h2>
-      <p class="hook">An agent rarely does a task the same way twice, so I run it a few hundred times and measure how often it actually finishes, and whether a change made it worse.</p>
-      <div class="tlinks">
-        <a href="https://github.com/d-walia/solari-agent-lab#gauntlet">Docs</a>
-        <a href="https://github.com/d-walia/solari-agent-lab/tree/main/src/tools/gauntlet">Source</a>
-      </div>
-    </div>
-    <div class="mock">
-      <div class="bar"><span></span><span></span><span></span><span class="t">reports/gauntlet.html</span></div>
-      <div class="body">
-        <div class="kpis">
-          <div class="kpi"><div class="v">75%</div><div class="k">overall pass rate</div></div>
-          <div class="kpi"><div class="v fail">−17</div><div class="k">vs baseline</div></div>
-          <div class="kpi"><div class="v">2</div><div class="k">tasks regressed</div></div>
-        </div>
-        <div class="row"><span>standard checkout</span><span class="rt pass">100%</span><span class="track"><i class="fpass" style="width:100%"></i></span></div>
-        <div class="row"><span>two-item cart</span><span class="rt pass">90%</span><span class="track"><i class="fpass" style="width:90%"></i></span></div>
-        <div class="row"><span>coupon step</span><span class="rt warn">73%</span><span class="track"><i class="fwarn" style="width:73%"></i></span></div>
-        <div class="row"><span>broken-image account</span><span class="rt fail">0%</span><span class="track"><i class="ffail" style="width:3%"></i></span></div>
-        <p class="note">↳ a reliability cliff a single test pass would never reveal.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- SLIPSTREAM -->
 <section class="tool" style="--accent:var(--teal)">
   <div class="wrap">
     <div class="prose">
-      <p class="eyebrow">Slipstream · agent-readiness</p>
-      <h2>Can AI agents even get through your product?</h2>
-      <p class="hook">Some sites work fine for a person but quietly break for an agent. Slipstream runs agents through a real signup or checkout and shows exactly where they get stuck.</p>
+      <p class="eyebrow">Slipstream · agent accessibility</p>
+      <h2>Can the agent even get through the flow?</h2>
+      <p class="hook">Before an agent can collect anything, it has to get in and all the way through. Slipstream runs it against the real flow and shows exactly where it hits a wall, auth steps, human-only buttons, dead ends.</p>
       <div class="tlinks">
         <a href="https://github.com/d-walia/solari-agent-lab#slipstream">Docs</a>
         <a href="https://d-walia.github.io/solari-agent-lab/demo-funnel/">Live test funnel</a>
@@ -167,29 +136,31 @@
   </div>
 </section>
 
-<!-- SWARM -->
-<section class="tool" style="--accent:var(--violet)">
+<!-- GAUNTLET -->
+<section class="tool" style="--accent:var(--ember)">
   <div class="wrap">
     <div class="prose">
-      <p class="eyebrow">Swarm · synthetic users</p>
-      <h2>Where do real users drop off, and why?</h2>
-      <p class="hook">Analytics tells you where people quit, never why. Swarm runs AI users with different personalities through the funnel, and every one that quits tells you what stopped it.</p>
+      <p class="eyebrow">Gauntlet · agent reliability</p>
+      <h2>Once it's in, does it finish reliably?</h2>
+      <p class="hook">An agent rarely does a task the same way twice, so I run it a few hundred times and measure how often it actually finishes, and whether a change made it worse.</p>
       <div class="tlinks">
-        <a href="https://github.com/d-walia/solari-agent-lab#swarm">Docs</a>
-        <a href="https://github.com/d-walia/solari-agent-lab/tree/main/src/tools/swarm">Source</a>
+        <a href="https://github.com/d-walia/solari-agent-lab#gauntlet">Docs</a>
+        <a href="https://github.com/d-walia/solari-agent-lab/tree/main/src/tools/gauntlet">Source</a>
       </div>
     </div>
     <div class="mock">
-      <div class="bar"><span></span><span></span><span></span><span class="t">reports/swarm.html</span></div>
+      <div class="bar"><span></span><span></span><span></span><span class="t">reports/gauntlet.html</span></div>
       <div class="body">
         <div class="kpis">
-          <div class="kpi"><div class="v">28%</div><div class="k">reached the goal</div></div>
-          <div class="kpi"><div class="v">50</div><div class="k">personas run</div></div>
+          <div class="kpi"><div class="v">75%</div><div class="k">overall pass rate</div></div>
+          <div class="kpi"><div class="v fail">−17</div><div class="k">vs baseline</div></div>
+          <div class="kpi"><div class="v">2</div><div class="k">tasks regressed</div></div>
         </div>
-        <div class="row"><span>Reached pricing</span><span class="rt">82%</span><span class="track"><i style="width:82%;background:var(--violet)"></i></span></div>
-        <div class="row"><span>Started signup</span><span class="rt">56%</span><span class="track"><i style="width:56%;background:var(--violet)"></i></span></div>
-        <div class="row"><span>Reached dashboard</span><span class="rt">28%</span><span class="track"><i style="width:28%;background:var(--violet)"></i></span></div>
-        <div class="cl"><b>×11</b><span>abandoned at the coupon field — thought a code was required.</span></div>
+        <div class="row"><span>standard checkout</span><span class="rt pass">100%</span><span class="track"><i class="fpass" style="width:100%"></i></span></div>
+        <div class="row"><span>two-item cart</span><span class="rt pass">90%</span><span class="track"><i class="fpass" style="width:90%"></i></span></div>
+        <div class="row"><span>coupon step</span><span class="rt warn">73%</span><span class="track"><i class="fwarn" style="width:73%"></i></span></div>
+        <div class="row"><span>broken-image account</span><span class="rt fail">0%</span><span class="track"><i class="ffail" style="width:3%"></i></span></div>
+        <p class="note">↳ a reliability cliff a single test pass would never reveal.</p>
       </div>
     </div>
   </div>
